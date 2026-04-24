@@ -1,0 +1,126 @@
+<!-- Security Tab -->
+<div class="tab-content" id="securityTab">
+    <div class="dashboard-grid">
+        <!-- Security Status Panel -->
+        <div class="panel" style="border-color: #ff0040;">
+            <div class="panel-header">
+                <div class="panel-title" style="color: #ff0040;">🔒 SECURITY STATUS</div>
+                <div class="panel-status" id="securityStatus" style="color: #00ff41;">SCANNING...</div>
+            </div>
+            <div class="panel-content">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid #1f2937; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.5rem;">🛡️</span>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-size: 0.75rem; color: #8899a6; text-transform: uppercase;">Firewall</span>
+                            <span id="fwStatus" style="font-size: 1.2rem; font-weight: 700; color: #00f3ff;">Checking...</span>
+                        </div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid #1f2937; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.5rem;">🚨</span>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-size: 0.75rem; color: #8899a6; text-transform: uppercase;">Banned IPs</span>
+                            <span id="bannedCount" style="font-size: 1.2rem; font-weight: 700; color: #00f3ff;">0</span>
+                        </div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid #1f2937; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.5rem;">🔐</span>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-size: 0.75rem; color: #8899a6; text-transform: uppercase;">Failed Logins (24h)</span>
+                            <span id="failedLogins" style="font-size: 1.2rem; font-weight: 700; color: #00f3ff;">0</span>
+                        </div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid #1f2937; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.5rem;">⚠️</span>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-size: 0.75rem; color: #8899a6; text-transform: uppercase;">Active Threats</span>
+                            <span id="activeThreats" style="font-size: 1.2rem; font-weight: 700; color: #00f3ff;">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Events Log -->
+        <div class="panel" style="grid-column: span 2;">
+            <div class="panel-header">
+                <div class="panel-title">📋 SECURITY EVENTS</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="nav-tab active" onclick="filterSecurityEvents('all')" style="padding: 5px 12px; font-size: 0.75rem;">ALL</button>
+                    <button class="nav-tab" onclick="filterSecurityEvents('auth_failure')" style="padding: 5px 12px; font-size: 0.75rem;">FAILED</button>
+                    <button class="nav-tab" onclick="filterSecurityEvents('firewall_block')" style="padding: 5px 12px; font-size: 0.75rem;">BLOCKED</button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <div id="securityLog" style="max-height: 300px; overflow-y: auto; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem;">
+                    <div style="color: #8899a6; text-align: center; padding: 20px;">Loading security events...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Attackers -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">🎯 TOP ATTACKERS</div>
+            </div>
+            <div class="panel-content">
+                <div id="attackersList" style="max-height: 300px; overflow-y: auto;">
+                    <div style="color: #8899a6; text-align: center; padding: 20px;">Analyzing attack patterns...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Countermeasures -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">⚡ COUNTERMEASURES</div>
+            </div>
+            <div class="panel-content">
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div>
+                        <h4 style="color: #00f3ff; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase;">IP Blocking</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="blockIPInput" placeholder="Enter IP to block..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid #1f2937; padding: 10px; color: #00f3ff; font-family: monospace;">
+                            <button onclick="blockIP()" style="background: rgba(255,0,64,0.2); border: 1px solid #ff0040; color: #ff0040; padding: 10px 20px; cursor: pointer; font-family: 'Orbitron', sans-serif;">BLOCK</button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #00f3ff; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase;">Service Control</h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <button onclick="restartService('nginx')" style="background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; padding: 10px; cursor: pointer;">🌐 Nginx</button>
+                            <button onclick="restartService('sshd')" style="background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; padding: 10px; cursor: pointer;">🔐 SSH</button>
+                            <button onclick="restartService('fail2ban')" style="background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; padding: 10px; cursor: pointer;">🛡️ Fail2ban</button>
+                            <button onclick="restartService('ufw')" style="background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; color: #00f3ff; padding: 10px; cursor: pointer;">🔥 UFW</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banned IPs Management -->
+        <div class="panel" style="grid-column: span 2;">
+            <div class="panel-header">
+                <div class="panel-title">🚫 BANNED IPs</div>
+            </div>
+            <div class="panel-content">
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #1f2937; color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 0.8rem;">IP Address</th>
+                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #1f2937; color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 0.8rem;">Banned At</th>
+                                <th style="text-align: left; padding: 12px; border-bottom: 2px solid #1f2937; color: #00f3ff; font-family: 'Orbitron', sans-serif; font-size: 0.8rem;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bannedIPsBody">
+                            <tr><td colspan="3" style="padding: 20px; text-align: center; color: #8899a6;">Loading banned IPs...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terminal Tab -->

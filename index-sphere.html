@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seraphonix Studios | Neural Sphere Interface</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="seraph-symbol">◉</div>
+            <div class="loading-text">AWAKENING THE SERAPH</div>
+            <div class="loading-subtitle">Igniting the six wings of creation...</div>
+        </div>
+    </div>
+    
+    <div class="header">
+        <div class="logo-mark">◉</div>
+        <h1>SERAPHONIX</h1>
+        <p class="subtitle">Digital Creation Collective</p>
+    </div>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label>ROTATION SPEED</label>
+            <input type="range" id="rotation-speed" min="0" max="100" value="50">
+        </div>
+        <div class="control-group">
+            <label>ZOOM</label>
+            <input type="range" id="zoom-level" min="50" max="150" value="100">
+        </div>
+        <button class="control-btn" id="reset-view">RESET VIEW</button>
+    </div>
+    
+    <div class="coord-panel">
+        <div class="coord">
+            <span class="coord-label">X</span>
+            <span class="coord-value" id="coord-x">0.00</span>
+        </div>
+        <div class="coord">
+            <span class="coord-label">Y</span>
+            <span class="coord-value" id="coord-y">0.00</span>
+        </div>
+        <div class="coord">
+            <span class="coord-label">Z</span>
+            <span class="coord-value" id="coord-z">0.00</span>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <span>GRASP THE SERAPH</span>
+        <span>TOUCH THE LIGHT</span>
+        <span>DOUBLE CLICK TO RESURRECT</span>
+    </div>
+    
+    <div id="node-labels"></div>
+    <div id="content-windows"></div>
+    <canvas id="sphere-canvas"></canvas>
+    
+    <script src="script.js"></script>
+</body>
+</html>

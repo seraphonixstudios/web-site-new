@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Seraphonix Studios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a15 0%, #050508 100%);
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 2px solid #00f3ff;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #00f3ff;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #ff00ff;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #8899a6;
+        }
+        
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .node-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .node-btn:hover, .node-btn:active {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px currentColor;
+        }
+        
+        .node-central { border-color: #00f3ff; color: #00f3ff; }
+        .node-lore { border-color: #ff006e; color: #ff006e; }
+        .node-brand { border-color: #ffb800; color: #ffb800; }
+        .node-genesis { border-color: #00ff88; color: #00ff88; }
+        .node-store { border-color: #00f3ff; color: #00f3ff; }
+        .node-vps { border-color: #ff0040; color: #ff0040; }
+        
+        .node-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .node-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        
+        .neural-os-btn {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(157, 0, 255, 0.2));
+            border: 2px solid #00f3ff;
+            color: #00f3ff;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            margin-top: 20px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #8899a6;
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 400px) {
+            .logo { font-size: 2rem; }
+            .nodes-grid { gap: 10px; }
+            .node-btn { padding: 20px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">◉ SERAPHONIX</div>
+        <div class="subtitle">Digital Creation Collective</div>
+    </div>
+    
+    <div class="container">
+        <div class="intro">
+            <p>Welcome to the Neural Sphere Interface</p>
+            <p style="font-size: 0.9rem; margin-top: 10px;">Tap a node to explore</p>
+        </div>
+        
+        <div class="nodes-grid">
+            <a href="/" class="node-btn node-central" onclick="openWindow('central'); return false;">
+                <span class="node-icon">◉</span>
+                <span class="node-name">CENTRAL</span>
+            </a>
+            
+            <a href="/" class="node-btn node-lore" onclick="openWindow('lore'); return false;">
+                <span class="node-icon">📜</span>
+                <span class="node-name">LORE</span>
+            </a>
+            
+            <a href="/" class="node-btn node-brand" onclick="openWindow('brand'); return false;">
+                <span class="node-icon">📖</span>
+                <span class="node-name">BRAND</span>
+            </a>
+            
+            <a href="/" class="node-btn node-store" onclick="openWindow('store'); return false;">
+                <span class="node-icon">🛒</span>
+                <span class="node-name">STORE</span>
+            </a>
+        </div>
+        
+        <a href="http://76.13.242.128:3077/" class="neural-os-btn">
+            🔐 ACCESS NEURAL-OS CMO TERMINAL
+        </a>
+    </div>
+    
+    <div class="footer">
+        <p>Neural Sphere Interface v2.077</p>
+        <p style="margin-top: 5px;">Optimized for Mobile</p>
+    </div>
+    
+    <script>
+        function openWindow(id) {
+            // For now, just alert. In real implementation, would show content windows
+            var urls = {
+                'central': '/#central',
+                'lore': '/#lore', 
+                'brand': '/#brand',
+                'store': '/#store'
+            };
+            window.location.href = urls[id] || '/';
+        }
+        
+        // Log for debugging
+        console.log('Mobile Seraphonix loaded');
+        console.log('Screen: ' + window.innerWidth + 'x' + window.innerHeight);
+        console.log('Touch: ' + ('ontouchstart' in window));
+    </script>
+</body>
+</html>

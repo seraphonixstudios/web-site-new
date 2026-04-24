@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seraphonix Studios | Neural Sphere Interface</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile-responsive.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-sphere">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+            </div>
+            <div class="loader-text">
+                <span class="glitch" data-text="AWAKENING THE SERAPH">AWAKENING THE SERAPH</span>
+                <span class="dots">...</span>
+            </div>
+            <div class="loader-sigil">◉</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="loader-status">Igniting the six wings of creation...</div>
+        </div>
+    </div>
+
+    <!-- Main Interface -->
+    <div id="interface">
+        <!-- HUD Overlay -->
+        <div class="hud-overlay">
+            <div class="hud-top">
+                <div class="hud-left">
+                    <div class="logo-small">
+                        <span class="logo-icon">◉</span>
+                        <span>SERAPHONIX</span>
+                    </div>
+                </div>
+                <div class="hud-center">
+                    <div class="system-status">
+                        <span class="status-indicator online"></span>
+                        <span>SERAPH AWAKENED • SIX WINGS ACTIVE</span>
+                    </div>
+                </div>
+                <div class="hud-right">
+                    <button id="admin-btn" class="admin-trigger">
+                        <span class="admin-icon">🔐</span>
+                        <span>ADMIN</span>
+                    </button>
+                    <div class="time-display" id="clock">00:00:00</div>
+                </div>
+            </div>
+            
+            <div class="hud-controls">
+                <div class="control-group">
+                    <label>ROTATION SPEED</label>
+                    <input type="range" id="speed-slider" min="0" max="100" value="15">
+                </div>
+                <div class="control-group">
+                    <label>ZOOM</label>
+                    <input type="range" id="zoom-slider" min="50" max="150" value="100">
+                </div>
+                <button id="reset-view" class="hud-btn">RESET VIEW</button>
+            </div>
+            
+            <div class="hud-bottom">
+                <div class="coordinates">
+                    <div class="coord">
+                        <span class="coord-label">X</span>
+                        <span class="coord-value" id="coord-x">0.00</span>
+                    </div>
+                    <div class="coord">
+                        <span class="coord-label">Y</span>
+                        <span class="coord-value" id="coord-y">0.00</span>
+                    </div>
+                    <div class="coord">
+                        <span class="coord-label">Z</span>
+                        <span class="coord-value" id="coord-z">0.00</span>
+                    </div>
+                </div>
+                <div class="instructions">
+                    <span>🖱️ GRASP THE SERAPH</span>
+                    <span>👆 TOUCH THE LIGHT</span>
+                    <span>⚡ DOUBLE CLICK TO RESURRECT</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Node Labels Overlay -->
+        <div id="node-labels"></div>
+
+        <!-- Content Windows Container -->
+        <div id="content-windows">
+            
+            <!-- CENTRAL NODE - SERAPHONIX INTRO -->
+            <div class="content-window" id="window-central" data-node="central">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span class="window-icon">◉</span>
+                        <span>SERAPHONIX STUDIOS</span>
+                    </div>
+                    <div class="window-controls">
+                        <button class="minimize-btn" title="Minimize">−</button>
+                        <button class="maximize-btn" title="Maximize">□</button>
+                        <button class="close-btn" title="Close">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div class="intro-hero">
+                        <h1 class="glitch-title" data-text="SERAPHONIX">SERAPHONIX</h1>
+                        <h2 class="subtitle">Digital Creation Collective</h2>
+                        <p class="tagline">Where imagination crystallizes into digital reality through neural networks and creative synthesis</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🌐</div>
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Possibilities</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-number">360°</div>
+                            <div class="stat-label">Navigation</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-number">10ms</div>
+                            <div class="stat-label">Response</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔮</div>
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">Nodes Active</div>
+                        </div>
+                    </div>
+                    
+                    <div class="intro-text">
+                        <p>Welcome to the Seraphonix Neural Sphere Interface. This 3D navigation system represents our interconnected ecosystem of creative tools, AI systems, and digital infrastructure.</p>
+                        <p><strong>How to navigate:</strong> Click and drag anywhere on the sphere to rotate it 360 degrees. Click any glowing node to access that section. Double-click to reset the view.</p>
+                    </div>
+                    
+                    <div class="quick-links">
+                        <h3>Quick Access</h3>
+                        <div class="link-grid">
+                            <button class="quick-link" data-target="lore">📜 Explore Lore</button>
+                            <button class="quick-link" data-target="brand">📖 Brand Bible</button>
+                            <button class="quick-link" data-target="genesis">🎨 Try Genesis AI</button>
+                            <button class="quick-link" data-target="store">🛒 Visit Store</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION NODE -->
+            <div class="content-window" id="window-navigation" data-node="navigation">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span class="window-icon">🧭</span>
+                        <span>NAVIGATION HUB</span>
+                    </div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div class="nav-visualization">
+                        <div class="sphere-preview">
+                            <div class="preview-ring ring-1"></div>
+                            <div class="preview-ring ring-2"></div>
+                            <div class="preview-ring ring-3"></div>
+                            <div class="preview-nodes">
+                                <div class="p-node central"></div>
+                                <div class="p-node n-1"></div>
+                                <div class="p-node n-2"></div>
+                                <div class="p-node n-3"></div>
+                                <div class="p-node n-4"></div>
+                                <div class="p-node n-5"></div>
+                                <div class="p-node n-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>Network Map</h3>
+                    <div class="nav-list">
+                        <div class="nav-item" data-target="central">
+                            <div class="nav-bullet cyan"></div>
+                            <div class="nav-info">
+                                <span class="nav-name">Central Hub</span>
+                                <span class="nav-desc">Main introduction and system overview</span>
+                            </div>
+                        </div>
+                        <div class="nav-item" data-target="lore">
+                            <div class="nav-bullet pink"></div>
+                            <div class="nav-info">
+                                <span class="nav-name">Lore Archive</span>
+                                <span class="nav-desc">Origin story, mythology, and vision</span>
+                            </div>
+                        </div>
+                        <div class="nav-item" data-target="brand">
+                            <div class="nav-bullet gold"></div>
+                            <div class="nav-info">
+                                <span class="nav-name">Brand Bible</span>
+                                <span class="nav-desc">Identity, colors, typography, voice</span>
+                            </div>
+                        </div>
+                        <div class="nav-item" data-target="genesis">
+                            <div class="nav-bullet magenta"></div>
+                            <div class="nav-info">
+                                <span class="nav-name">Genesis Engine</span>
+                                <span class="nav-desc">AI image generation - 20 free/day</span>
+                            </div>
+                        </div>
+                        <div class="nav-item" data-target="store">
+                            <div class="nav-bullet green"></div>
+                            <div class="nav-info">
+                                <span class="nav-name">Atlantiplex Store</span>
+                                <span class="nav-desc">Digital marketplace & AI tools</span>
+                            </div>
+                        </div>
+                        <div class="nav-item admin-item" data-target="vps">
+                            <div class="nav-bullet" style="background: #00f3ff; box-shadow: 0 0 10px #00f3ff;"></div>
+                            <div class="nav-info">
+                                <span class="nav-name" style="color: #00f3ff;">Neural-OS</span>
+                                <span class="nav-desc">CMO Terminal • Logs • Debug • Monitor • Upgrade</span>
+                            </div>
+                            <span class="lock-badge">🔐</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LORE NODE -->
+            <div class="content-window" id="window-lore" data-node="lore">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span class="window-icon">📜</span>
+                        <span>ARCHIVE OF LORE</span>
+                    </div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div class="lore-book">
+                        <div class="book-spine"></div>
+                        <div class="lore-chapters">
+                            <div class="chapter active" data-chapter="1">
+                                <div class="chapter-header">
+                                    <span class="chapter-number">I</span>
+                                    <h2>The Genesis</h2>
+                                </div>
+                                <div class="chapter-content">
+                                    <p class="lead">In the digital void between creation and chaos, where binary streams merge with pure imagination, Seraphonix emerged—not as a company, but as a convergence point.</p>
+                                    <p>The year was 2024. The digital landscape had become saturated with mediocrity, templates, and recycled ideas. A group of visionaries, artists, and engineers gathered around a singular question: <em>What if we could build a bridge between human creativity and machine intelligence that elevated both?</em></p>
+                                    <p>Thus began the Seraphonix experiment—a perpetual cycle of creation, destruction, and rebirth. We rejected the notion that technology must be sterile and art must be analog. Instead, we forged a new path where neural networks amplify human vision, where code becomes canvas, and where every pixel carries intention.</p>
+                                    <div class="quote-block">
+                                        <blockquote>"We do not use AI to replace creativity. We use it to unlock dimensions of imagination previously inaccessible to human minds alone."</blockquote>
+                                        <cite>— The Seraphonix Manifesto</cite>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="chapter" data-chapter="2">
+                                <div class="chapter-header">
+                                    <span class="chapter-number">II</span>
+                                    <h2>The Neural Sphere</h2>
+                                </div>
+                                <div class="chapter-content">
+                                    <p class="lead">The interface you navigate now is not mere decoration—it is a living representation of our interconnected ecosystem.</p>
+                                    <p>The spherical form emerged from countless iterations. We experimented with linear menus, grid systems, hierarchical trees. None captured the essence of what Seraphonix represents: a universe of possibilities existing in constant motion, where every point connects to every other point through the center.</p>
+                                    <p>Each node in the sphere represents a facet of our operation:</p>
+                                    <ul class="lore-list">
+                                        <li><strong>The Center:</strong> Our core identity and mission</li>
+                                        <li><strong>The Satellites:</strong> Specialized tools and platforms</li>
+                                        <li><strong>The Connections:</strong> Data flowing between systems</li>
+                                        <li><strong>The Rotation:</strong> Our commitment to constant evolution</li>
+                                    </ul>
+                                    <p>When you grasp the sphere and rotate it, you participate in the same motion that guides our developers, designers, and AI systems—a 360-degree view of possibility, nothing hidden, everything accessible.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="chapter" data-chapter="3">
+                                <div class="chapter-header">
+                                    <span class="chapter-number">III</span>
+                                    <h2>The Digital Seraph</h2>
+                                </div>
+                                <div class="chapter-content">
+                                    <p class="lead">The seraph—six-winged, many-eyed, burning with perpetual fire—serves as our totem and guardian.</p>
+                                    <p>In ancient texts, seraphim were beings of pure light, attendants to the divine, perpetually in motion, singing songs of creation. We adopted this symbol not from religious reverence, but from recognition of a profound truth: the most powerful creative forces are those that never stop moving, never stop burning, never stop ascending.</p>
+                                    <p>Each wing of our seraph represents a pillar of Seraphonix:</p>
+                                    <div class="pillars-grid">
+                                        <div class="pillar">
+                                            <span class="pillar-icon">🎨</span>
+                                            <span class="pillar-name">Design</span>
+                                            <span class="pillar-desc">Visual systems that communicate</span>
+                                        </div>
+                                        <div class="pillar">
+                                            <span class="pillar-icon">💻</span>
+                                            <span class="pillar-name">Development</span>
+                                            <span class="pillar-desc">Code that brings ideas to life</span>
+                                        </div>
+                                        <div class="pillar">
+                                            <span class="pillar-icon">🧠</span>
+                                            <span class="pillar-name">Artificial Intelligence</span>
+                                            <span class="pillar-desc">Neural networks that enhance</span>
+                                        </div>
+                                        <div class="pillar">
+                                            <span class="pillar-icon">🌐</span>
+                                            <span class="pillar-name">Infrastructure</span>
+                                            <span class="pillar-desc">Systems that scale infinitely</span>
+                                        </div>
+                                        <div class="pillar">
+                                            <span class="pillar-icon">🛒</span>
+                                            <span class="pillar-name">Commerce</span>
+                                            <span class="pillar-desc">Platforms that connect creators</span>
+                                        </div>
+                                        <div class="pillar">
+                                            <span class="pillar-icon">📖</span>
+                                            <span class="pillar-name">Story</span>
+                                            <span class="pillar-desc">Narratives that inspire action</span>
+                                        </div>
+                                    </div>
+                                    <p class="closing">To interact with Seraphonix is to commune with these elemental forces. You are not a user. You are a participant in our ongoing act of creation.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chapter-nav">
+                            <button class="nav-btn prev-btn" disabled>
+                                <span>←</span> Previous
+                            </button>
+                            <div class="chapter-dots">
+                                <span class="dot active" data-chapter="1"></span>
+                                <span class="dot" data-chapter="2"></span>
+                                <span class="dot" data-chapter="3"></span>
+                            </div>
+                            <button class="nav-btn next-btn">
+                                Next <span>→</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BRAND BIBLE NODE -->
+            <div class="content-window" id="window-brand" data-node="brand">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span class="window-icon">📖</span>
+                        <span>BRAND BIBLE</span>
+                    </div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div class="brand-tabs">
+                        <button class="brand-tab active" data-tab="identity">Identity</button>
+                        <button class="brand-tab" data-tab="colors">Colors</button>
+                        <button class="brand-tab" data-tab="typography">Typography</button>
+                        <button class="brand-tab" data-tab="logo">Logo</button>
+                        <button class="brand-tab" data-tab="voice">Voice</button>
+                    </div>
+                    
+                    <div class="brand-panels">
+                        <div class="brand-panel active" data-panel="identity">
+                            <div class="identity-section">
+                                <div class="logo-showcase">
+                                    <div class="logo-main-display">
+                                        <div class="logo-mark">◉</div>
+                                        <div class="logo-text">
+                                            <span class="logo-word">SERAPHONIX</span>
+                                            <span class="logo-sub">STUDIOS</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mission-statement">
+                                    <h3>Mission</h3>
+                                    <p>To transcend the boundaries between human creativity and artificial intelligence, creating digital experiences that elevate both.</p>
+                                </div>
+                                
+                                <div class="core-values">
+                                    <h3>Core Values</h3>
+                                    <div class="values-list">
+                                        <div class="value-item">
+                                            <div class="value-icon">◉</div>
+                                            <div class="value-content">
+                                                <h4>Infinite Creativity</h4>
+                                                <p>We believe imagination has no limits, only undiscovered paths.</p>
+                                            </div>
+                                        </div>
+                                        <div class="value-item">
+                                            <div class="value-icon">⚡</div>
+                                            <div class="value-content">
+                                                <h4>Technological Mastery</h4>
+                                                <p>We harness the full power of cutting-edge tools and techniques.</p>
+                                            </div>
+                                        </div>
+                                        <div class="value-item">
+                                            <div class="value-icon">🔮</div>
+                                            <div class="value-content">
+                                                <h4>Visionary Design</h4>
+                                                <p>We see the future and build it today.</p>
+                                            </div>
+                                        </div>
+                                        <div class="value-item">
+                                            <div class="value-icon">🌐</div>
+                                            <div class="value-content">
+                                                <h4>Connected Systems</h4>
+                                                <p>Everything we create exists in an ecosystem of interconnection.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="brand-panel" data-panel="colors">
+                            <div class="colors-section">
+                                <div class="color-palette">
+                                    <div class="color-group">
+                                        <h4>Primary Colors</h4>
+                                        <div class="colors-row">
+                                            <div class="color-card primary">
+                                                <div class="color-swatch" style="background: #00D4FF;"></div>
+                                                <div class="color-info">
+                                                    <span class="color-name">Cyan Core</span>
+                                                    <span class="color-hex">#00D4FF</span>
+                                                    <span class="color-rgb">RGB(0, 212, 255)</span>
+                                                </div>
+                                            </div>
+                                            <div class="color-card primary">
+                                                <div class="color-swatch" style="background: #7000FF;"></div>
+                                                <div class="color-info">
+                                                    <span class="color-name">Void Violet</span>
+                                                    <span class="color-hex">#7000FF</span>
+                                                    <span class="color-rgb">RGB(112, 0, 255)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="color-group">
+                                        <h4>Secondary Colors</h4>
+                                        <div class="colors-row">
+                                            <div class="color-card secondary">
+                                                <div class="color-swatch" style="background: #FF006E;"></div>
+                                                <div class="color-info">
+                                                    <span class="color-name">Neon Pink</span>
+                                                    <span class="color-hex">#FF006E</span>
+                                                </div>
+                                            </div>
+                                            <div class="color-card secondary">
+                                                <div class="color-swatch" style="background: #00FF88;"></div>
+                                                <div class="color-info">
+                                                    <span class="color-name">Matrix Green</span>
+                                                    <span class="color-hex">#00FF88</span>
+                                                </div>
+                                            </div>
+                                            <div class="color-card secondary">
+                                                <div class="color-swatch" style="background: #FFB800;"></div>
+                                                <div class="color-info">
+                                                    <span class="color-name">Solar Gold</span>
+                                                    <span class="color-hex">#FFB800</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="color-group">
+                                        <h4>Usage Guidelines</h4>
+                                        <div class="usage-list">
+                                            <div class="usage-item">
+                                                <span class="usage-color cyan"></span>
+                                                <span>Primary interface elements, CTAs</span>
+                                            </div>
+                                            <div class="usage-item">
+                                                <span class="usage-color violet"></span>
+                                                <span>Navigation, secondary actions</span>
+                                            </div>
+                                            <div class="usage-item">
+                                                <span class="usage-color pink"></span>
+                                                <span>AI-related features, Verily branding</span>
+                                            </div>
+                                            <div class="usage-item">
+                                                <span class="usage-color green"></span>
+                                                <span>Store, success states, commerce</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="brand-panel" data-panel="typography">
+                            <div class="typography-section">
+                                <div class="font-showcase">
+                                    <div class="font-card">
+                                        <h4 class="font-name" style="font-family: 'Orbitron', sans-serif;">ORBITRON</h4>
+                                        <div class="font-sample" style="font-family: 'Orbitron', sans-serif;">
+                                            <p class="sample-large">SERAPHONIX</p>
+                                            <p class="sample-medium">Navigation • Headers • UI</p>
+                                            <p class="sample-small">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+                                            <p class="sample-small">0123456789</p>
+                                        </div>
+                                        <div class="font-weights">
+                                            <span style="font-weight: 400;">400</span>
+                                            <span style="font-weight: 500;">500</span>
+                                            <span style="font-weight: 700;">700</span>
+                                            <span style="font-weight: 900;">900</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="font-card">
+                                        <h4 class="font-name" style="font-family: 'Rajdhani', sans-serif;">RAJDHANI</h4>
+                                        <div class="font-sample" style="font-family: 'Rajdhani', sans-serif;">
+                                            <p class="sample-large">Seraphonix Studios</p>
+                                            <p class="sample-medium">Body text • Descriptions • Data</p>
+                                            <p class="sample-small">abcdefghijklmnopqrstuvwxyz</p>
+                                            <p class="sample-small">0123456789</p>
+                                        </div>
+                                        <div class="font-weights">
+                                            <span style="font-weight: 300;">300</span>
+                                            <span style="font-weight: 400;">400</span>
+                                            <span style="font-weight: 600;">600</span>
+                                            <span style="font-weight: 700;">700</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="type-scale">
+                                    <h4>Type Scale</h4>
+                                    <div class="scale-items">
+                                        <div class="scale-item">
+                                            <span class="scale-size">48px</span>
+                                            <span class="scale-use">Hero Titles</span>
+                                        </div>
+                                        <div class="scale-item">
+                                            <span class="scale-size">32px</span>
+                                            <span class="scale-use">Section Headers</span>
+                                        </div>
+                                        <div class="scale-item">
+                                            <span class="scale-size">24px</span>
+                                            <span class="scale-use">Subheaders</span>
+                                        </div>
+                                        <div class="scale-item">
+                                            <span class="scale-size">16px</span>
+                                            <span class="scale-use">Body Text</span>
+                                        </div>
+                                        <div class="scale-item">
+                                            <span class="scale-size">14px</span>
+                                            <span class="scale-use">Captions, Labels</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="brand-panel" data-panel="logo">
+                            <div class="logo-section">
+                                <div class="logo-variations">
+                                    <div class="logo-variant">
+                                        <h5>Primary</h5>
+                                        <div class="logo-box dark">
+                                            <div class="logo-display">
+                                                <span class="l-mark">◉</span>
+                                                <span class="l-text">SERAPHONIX</span>
+                                            </div>
+                                        </div>
+                                        <p>Use on dark backgrounds</p>
+                                    </div>
+                                    
+                                    <div class="logo-variant">
+                                        <h5>Light Variant</h5>
+                                        <div class="logo-box light">
+                                            <div class="logo-display">
+                                                <span class="l-mark">◉</span>
+                                                <span class="l-text">SERAPHONIX</span>
+                                            </div>
+                                        </div>
+                                        <p>Use on light backgrounds</p>
+                                    </div>
+                                    
+                                    <div class="logo-variant">
+                                        <h5>Icon Only</h5>
+                                        <div class="logo-box dark">
+                                            <div class="logo-display">
+                                                <span class="l-mark large">◉</span>
+                                            </div>
+                                        </div>
+                                        <p>Favicons, app icons, avatars</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="logo-clearspace">
+                                    <h4>Clear Space</h4>
+                                    <div class="clearspace-demo">
+                                        <div class="demo-logo">◉ SERAPHONIX</div>
+                                        <div class="clearspace-box"></div>
+                                    </div>
+                                    <p>Maintain minimum clear space equal to the height of the "◉" symbol on all sides.</p>
+                                </div>
+                                
+                                <div class="download-section">
+                                    <button class="download-btn">
+                                        <span>📥</span> Download Brand Assets (ZIP)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="brand-panel" data-panel="voice">
+                            <div class="voice-section">
+                                <div class="voice-traits">
+                                    <div class="voice-card">
+                                        <div class="voice-header">
+                                            <span class="voice-icon">🚀</span>
+                                            <h4>Visionary</h4>
+                                        </div>
+                                        <p>We speak of possibilities, not limitations. Every message carries the weight of future potential. We don't say "we can't"—we say "what if?"</p>
+                                        <div class="voice-example">
+                                            <span class="bad">❌ "Our system handles up to 1000 users"</span>
+                                            <span class="good">✅ "Scale infinitely—from prototype to planet"</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="voice-card">
+                                        <div class="voice-header">
+                                            <span class="voice-icon">⚡</span>
+                                            <h4>Energetic</h4>
+                                        </div>
+                                        <p>Our tone is dynamic, electric, alive. We use active verbs. We move forward. We create momentum with our words.</p>
+                                        <div class="voice-example">
+                                            <span class="bad">❌ "The application is used for creating designs"</span>
+                                            <span class="good">✅ "Unleash your vision. Create without limits."</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="voice-card">
+                                        <div class="voice-header">
+                                            <span class="voice-icon">🔮</span>
+                                            <h4>Mystical</h4>
+                                        </div>
+                                        <p>We honor the magic in technology. Our words evoke wonder while delivering precision. Technology is our spellcraft.</p>
+                                        <div class="voice-example">
+                                            <span class="bad">❌ "Our AI uses machine learning algorithms"</span>
+                                            <span class="good">✅ "Neural networks that dream in digital color"</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="voice-card">
+                                        <div class="voice-header">
+                                            <span class="voice-icon">🎯</span>
+                                            <h4>Precise</h4>
+                                        </div>
+                                        <p>Despite our poetic bent, we are engineers. Every claim is backed by capability. Every promise is kept.</p>
+                                        <div class="voice-example">
+                                            <span class="bad">❌ "Really fast servers maybe the best"</span>
+                                            <span class="good">✅ "99.99% uptime guarantee with NVMe SSDs"</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="writing-guidelines">
+                                    <h4>Writing Guidelines</h4>
+                                    <ul>
+                                        <li>Use sentence case for headings (not Title Case)</li>
+                                        <li>Avoid jargon unless absolutely necessary—then explain it</li>
+                                        <li>Replace "very" with stronger adjectives</li>
+                                        <li>Active voice over passive, always</li>
+                                        <li>Numbers as digits (7, not seven) for impact</li>
+                                        <li>Emojis are welcome when they add clarity or emotion</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GENESIS ENGINE NODE -->
+            <div class="content-window" id="window-genesis" data-node="genesis">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span class="window-icon">✨</span>
+                        <span>GENESIS ENGINE</span>
+                        <span class="status-badge active">LIVE</span>
+                    </div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn">×</button>
+                    </div>
+                </div>
+                <div class="window-content genesis-content" style="padding: 0; overflow: hidden;">
+                    <iframe src="AI%20Image%20Generator/client/dist/index.html" style="width: 100%; height: 100%; border: none; border-radius: 0 0 12px 12px; background: #0a0a0f;" title="Genesis Engine"></iframe>
+                </div>
+            </div>
+
+            <!-- ATLANTIPLEX STORE NODE -->
+            <div class="content-window" id="window-store" data-node="store">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span class="window-icon">🛒</span>
+                        <span>ATLANTIPLEX STORE</span>
+                    </div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn">×</button>
+                    </div>
+                </div>
+                <div class="window-content store-content" style="padding: 0; overflow: hidden;">
+                    <iframe src="store_html/store.html" style="width: 100%; height: 100%; border: none; border-radius: 0 0 12px 12px; background: #0a0a0f;" title="Atlantiplex Store"></iframe>
+                </div>
+            </div>
+
+            <!-- NEURAL-OS CMO NODE (ADMIN ONLY) -->
+            <div class="content-window admin-window" id="window-vps" data-node="vps">
+                <div class="auth-overlay" id="vps-auth">
+                    <div class="auth-panel">
+                        <div class="auth-visual">
+                            <div class="neural-logo" style="font-size: 4rem; color: #00f3ff; text-shadow: 0 0 20px #00f3ff, 0 0 40px #00f3ff;">◉</div>
+                        </div>
+                        <h3 style="color: #00f3ff; text-shadow: 0 0 10px #00f3ff;">NEURAL-OS v2.077</h3>
+                        <p class="auth-subtitle">Chief Maintenance Officer Terminal</p>
+                        <p class="auth-subtitle" style="font-size: 0.75rem; color: #ff00ff; margin-top: 5px;">VPS Diagnostics Grid • Level 5 Clearance Required</p>
+                        <div class="auth-form">
+                            <input type="password" id="admin-password" placeholder="Enter CMO access code" maxlength="20" style="border-color: #00f3ff; background: rgba(0, 243, 255, 0.05);">
+                            <button id="auth-submit" class="auth-btn" style="background: linear-gradient(90deg, #00f3ff, #7000ff);">Initialize Neural Link</button>
+                        </div>
+                        <p class="auth-error" id="auth-error">Neural authentication failed. Access denied.</p>
+                        <p class="auth-hint" style="color: #00ff88;">Sphere Code: seraphadmin | CMO Terminal: seraphadmin</p>
+                    </div>
+                </div>
+                
+                <div class="window-header">
+                    <div class="window-title">
+                        <span class="window-icon">🧠</span>
+                        <span>NEURAL-OS</span>
+                        <span class="admin-badge">C.M.O. v2.077</span>
+                    </div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn" onclick="document.getElementById('neural-os-frame').src=document.getElementById('neural-os-frame').src">⟳</button>
+                        <button class="close-btn">×</button>
+                    </div>
+                </div>
+                
+                <div class="window-content vps-content" style="background: #0a0a0f;">
+                    <iframe id="neural-os-frame" src="about:blank" style="width: 100%; height: 100%; border: none; border-radius: 0 0 12px 12px; background: #0a0a0f;" allow="fullscreen" title="Neural-OS Chief Maintenance Officer Terminal"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Canvas -->
+        <canvas id="sphere-canvas"></canvas>
+    </div>
+
+    <script src="auth-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Debug</title>
+<style>
+body { background: #050508; color: #00f3ff; font-family: monospace; padding: 20px; }
+h1 { text-align: center; color: #00f3ff; }
+.status { background: rgba(0,243,255,0.1); border: 1px solid #00f3ff; padding: 15px; margin: 10px 0; border-radius: 8px; }
+button { background: rgba(0,243,255,0.2); border: 1px solid #00f3ff; color: #00f3ff; padding: 15px; margin: 5px; width: 45%; cursor: pointer; }
+#log { background: #000; border: 1px solid #333; padding: 10px; margin-top: 20px; height: 200px; overflow-y: auto; font-size: 12px; }
+.success { color: #0f0; } .error { color: #f00; }
+</style>
+</head>
+<body>
+<h1>MOBILE DEBUG</h1>
+<div class="status" id="info">Loading...</div>
+<button onclick="location.href='/'">Main Site</button>
+<button onclick="location.href='http://76.13.242.128:3077/'">Neural OS</button>
+<button onclick="testWebGL()">Test WebGL</button>
+<button onclick="location.reload(true)">Clear Cache</button>
+<div id="log"></div>
+<script>
+function log(msg, type) {
+    var el = document.getElementById('log');
+    var time = new Date().toLocaleTimeString();
+    var cls = type || '';
+    el.innerHTML += '<div class="' + cls + '">[' + time + '] ' + msg + '</div>';
+    el.scrollTop = el.scrollHeight;
+    console.log(msg);
+}
+
+var ua = navigator.userAgent;
+var isIOS = /iPad|iPhone|iPod/.test(ua);
+var isAndroid = /Android/.test(ua);
+
+document.getElementById('info').innerHTML = 
+    'Device: ' + (isIOS ? 'iOS' : isAndroid ? 'Android' : 'Desktop') + '<br>' +
+    'Screen: ' + window.innerWidth + 'x' + window.innerHeight + '<br>' +
+    'Touch: ' + ('ontouchstart' in window ? 'YES' : 'NO') + '<br>' +
+    'WebGL: Testing...';
+
+log('Page loaded on ' + (isIOS ? 'iOS' : isAndroid ? 'Android' : 'Desktop'));
+
+function testWebGL() {
+    try {
+        var c = document.createElement('canvas');
+        var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+        if (gl) {
+            log('WebGL: SUPPORTED', 'success');
+            alert('WebGL is supported!');
+        } else {
+            log('WebGL: NOT SUPPORTED', 'error');
+            alert('WebGL NOT supported');
+        }
+    } catch(e) {
+        log('WebGL Error: ' + e.message, 'error');
+        alert('WebGL Error: ' + e.message);
+    }
+}
+
+// Auto-test WebGL after 1 second
+setTimeout(function() {
+    try {
+        var c = document.createElement('canvas');
+        var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+        document.getElementById('info').innerHTML += '<br>WebGL: ' + (gl ? 'YES' : 'NO');
+    } catch(e) {
+        document.getElementById('info').innerHTML += '<br>WebGL: ERROR';
+    }
+}, 1000);
+</script>
+</body>
+</html>

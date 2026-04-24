@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seraphonix - DEBUG MODE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #050508;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #debug-console {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            border-right: 2px solid #0f0;
+            padding: 10px;
+            overflow-y: auto;
+            z-index: 99999;
+        }
+        #sphere-container {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+        }
+        #sphere-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        .ok { color: #0f0; }
+        .error { color: #f00; }
+        .info { color: #0ff; }
+        .warn { color: #ff0; }
+        h2 { color: #0f0; margin-bottom: 10px; border-bottom: 1px solid #0f0; padding-bottom: 5px; }
+        .step { margin: 5px 0; padding: 3px; border-left: 3px solid #333; padding-left: 8px; }
+        .step.pass { border-left-color: #0f0; background: rgba(0,255,0,0.05); }
+        .step.fail { border-left-color: #f00; background: rgba(255,0,0,0.05); }
+    </style>
+</head>
+<body>
+    <div id="debug-console">
+        <h2>🔍 FORENSIC DEBUG CONSOLE</h2>
+        <div id="output"></div>
+    </div>
+    <div id="sphere-container">
+        <canvas id="sphere-canvas"></canvas>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.className = 'step ' + type;
+            div.innerHTML = `<span class="${type}">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+            output.appendChild(div);
+            console.log(`[${type.toUpperCase()}] ${msg}`);
+        }
+
+        // Override console
+        const origLog = console.log;
+        const origError = console.error;
+        console.log = (...args) => { origLog.apply(console, args); };
+        console.error = (...args) => { 
+            origError.apply(console, args); 
+            log('ERROR: ' + args.join(' '), 'error'); 
+        };
+
+        log('Starting forensic analysis...', 'info');
+
+        // Step 1: Check dependencies
+        log('Step 1: Checking external dependencies...', 'info');
+        if (typeof THREE === 'undefined') {
+            log('THREE.js NOT LOADED! Check CDN/internet.', 'fail');
+        } else {
+            log(`THREE.js loaded: v${THREE.REVISION}`, 'pass');
+        }
+
+        if (typeof gsap === 'undefined') {
+            log('GSAP NOT LOADED!', 'warn');
+        } else {
+            log('GSAP loaded', 'pass');
+        }
+
+        // Step 2: Check DOM elements
+        log('Step 2: Checking DOM elements...', 'info');
+        const canvas = document.getElementById('sphere-canvas');
+        if (!canvas) {
+            log('Canvas element NOT FOUND!', 'fail');
+        } else {
+            log('Canvas element found', 'pass');
+        }
+
+        // Step 3: Test WebGL
+        log('Step 3: Testing WebGL...', 'info');
+        let renderer = null;
+        try {
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            log('WebGL renderer created', 'pass');
+        } catch (e) {
+            log('WebGL FAILED: ' + e.message, 'fail');
+        }
+
+        // Step 4: Test basic scene
+        log('Step 4: Testing scene creation...', 'info');
+        try {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+            log('Scene and camera created', 'pass');
+
+            // Test geometry
+            const geo = new THREE.SphereGeometry(1, 16, 16);
+            const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const mesh = new THREE.Mesh(geo, mat);
+            scene.add(mesh);
+            log('Mesh added to scene', 'pass');
+
+            // Test render
+            renderer.setSize(400, 400);
+            renderer.render(scene, camera);
+            log('Render successful - check right panel for green sphere', 'pass');
+
+        } catch (e) {
+            log('Scene creation FAILED: ' + e.message, 'fail');
+        }
+
+        // Step 5: Test with actual script.js code
+        log('Step 5: Testing actual sphere initialization...', 'info');
+        
+        try {
+            // Simulate what script.js does
+            const scene2 = new THREE.Scene();
+            scene2.background = new THREE.Color(0x050508);
+            
+            const camera2 = new THREE.PerspectiveCamera(60, window.innerWidth/2 / window.innerHeight, 0.1, 1000);
+            camera2.position.z = 12;
+            
+            const renderer2 = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer2.setSize(window.innerWidth/2, window.innerHeight);
+            renderer2.setClearColor(0x050508);
+            log('Full renderer setup successful', 'pass');
+
+            // Create sphere group
+            const sphereGroup = new THREE.Group();
+            scene2.add(sphereGroup);
+            log('Sphere group created', 'pass');
+
+            // Outer wireframe
+            const outerGeo = new THREE.IcosahedronGeometry(4, 2);
+            const outerMat = new THREE.MeshBasicMaterial({ 
+                color: 0x00D4FF, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.1 
+            });
+            sphereGroup.add(new THREE.Mesh(outerGeo, outerMat));
+            log('Outer wireframe added', 'pass');
+
+            // Central node
+            const nodeGeo = new THREE.SphereGeometry(1.2, 32, 32);
+            const nodeMat = new THREE.MeshPhongMaterial({ 
+                color: 0x00D4FF,
+                emissive: 0x00D4FF,
+                emissiveIntensity: 0.4
+            });
+            sphereGroup.add(new THREE.Mesh(nodeGeo, nodeMat));
+            log('Central node added', 'pass');
+
+            // Animate
+            function animate() {
+                requestAnimationFrame(animate);
+                sphereGroup.rotation.y += 0.002;
+                renderer2.render(scene2, camera2);
+            }
+            animate();
+            log('Animation running - sphere should be visible on right', 'pass');
+
+        } catch (e) {
+            log('Full initialization FAILED: ' + e.message, 'fail');
+            console.error(e);
+        }
+
+        log('Forensic analysis complete.', 'info');
+    </script>
+</body>
+</html>

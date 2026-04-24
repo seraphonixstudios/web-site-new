@@ -1,0 +1,4 @@
+location /AI_Image_Generator/ {
+        alias /var/www/html/AI_Image_Generator/;
+        try_files $uri $uri/ =404;
+    }

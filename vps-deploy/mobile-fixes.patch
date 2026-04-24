@@ -1,0 +1,21 @@
+// Mobile detection and optimized rendering - add these fixes to script.js
+
+// Find the Seraphonix class constructor (around line 85) and add mobile detection at the start:
+
+constructor() {
+    // MOBILE DETECTION - Add at the START of constructor
+    this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+        || window.innerWidth < 768;
+    
+    // If mobile, reduce rendering significantly
+    if (this.isMobile) {
+        this.particleCount = 50; // Reduced from 500
+        this.nodeCount = 7;
+        this.animationQuality = 'low';
+    } else {
+        this.particleCount = 500;
+        this.nodeCount = 15;
+        this.animationQuality = 'high';
+    }
+    
+    // ... rest of constructor continues

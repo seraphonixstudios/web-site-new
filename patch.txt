@@ -1,0 +1,8 @@
+// Refresh node labels to show VPS
+            this.updateNodeLabels();
+            
+            // Load Neural-OS in iframe
+            const neuralFrame = document.getElementById('neural-os-frame');
+            if (neuralFrame) {
+                neuralFrame.src = '/neural-os/';
+            }

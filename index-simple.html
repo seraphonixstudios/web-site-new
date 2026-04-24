@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seraphonix Studios - WORKING VERSION</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --cyan: #00D4FF;
+            --violet: #7000FF;
+            --pink: #FF006E;
+            --green: #00FF88;
+            --gold: #FFB800;
+            --red: #FF3333;
+            --bg-dark: #050508;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            color: #fff;
+        }
+        
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0a0a15 0%, #050508 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+        
+        #loading-screen.hidden { opacity: 0; pointer-events: none; }
+        
+        .loader-container {
+            text-align: center;
+        }
+        
+        .loader-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--cyan);
+            letter-spacing: 3px;
+        }
+        
+        #interface { position: relative; width: 100%; height: 100%; }
+        
+        #sphere-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            cursor: grab;
+        }
+        
+        #sphere-canvas:active { cursor: grabbing; }
+        
+        .hud-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            padding: 20px;
+        }
+        
+        .hud-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: auto;
+        }
+        
+        .logo-small {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.875rem;
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 2px;
+        }
+        
+        .system-status {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--green);
+            letter-spacing: 2px;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hud-controls {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            pointer-events: auto;
+            background: rgba(10, 10, 15, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .control-group label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.625rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+        }
+        
+        .hud-btn {
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.625rem;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .hud-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: rgba(0, 212, 255, 0.15);
+        }
+        
+        .hud-bottom {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: auto;
+        }
+        
+        .coordinates {
+            display: flex;
+            gap: 24px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+        }
+        
+        .coord-label { color: rgba(255, 255, 255, 0.4); }
+        .coord-value { color: var(--cyan); }
+        
+        .instructions {
+            display: flex;
+            gap: 20px;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Windows */
+        #content-windows {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 200;
+        }
+        
+        .content-window {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(10, 10, 15, 0.98) 0%, rgba(20, 20, 35, 0.95) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            border-radius: 16px;
+            width: 600px;
+            max-height: 80vh;
+            pointer-events: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 212, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+        
+        .content-window.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: rgba(0, 212, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            cursor: move;
+        }
+        
+        .window-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.875rem;
+            color: var(--cyan);
+            letter-spacing: 1px;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .window-controls button {
+            width: 26px;
+            height: 26px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .window-controls button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 0, 110, 0.3) !important;
+            border-color: var(--pink) !important;
+        }
+        
+        .window-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        /* Node Labels */
+        #node-labels {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .node-label {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            letter-spacing: 2px;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+        }
+        
+        .node-label.visible { opacity: 1; }
+        
+        .admin-label {
+            color: var(--pink);
+            text-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
+            border-color: rgba(255, 0, 110, 0.4);
+        }
+        
+        /* Window content styles */
+        .intro-hero {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .glitch-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--cyan);
+            letter-spacing: 6px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        
+        .subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--violet);
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+        }
+        
+        .tagline {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-4px);
+        }
+        
+        .stat-icon { font-size: 1.75rem; margin-bottom: 8px; }
+        
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.75rem;
+            color: var(--cyan);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+        
+        .quick-links h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.875rem;
+            color: var(--cyan);
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+        
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .quick-link {
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9375rem;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .quick-link:hover {
+            border-color: var(--cyan);
+            background: rgba(0, 212, 255, 0.15);
+            transform: translateX(4px);
+        }
+        
+        .lore-book, .brand-tabs, .nav-list { /* basic styling */ }
+        
+        h2 { color: var(--pink); font-family: 'Orbitron', sans-serif; margin-bottom: 16px; }
+        p { color: rgba(255, 255, 255, 0.8); line-height: 1.8; margin-bottom: 16px; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.03); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 212, 255, 0.5); }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-text">AWAKENING THE SERAPH</div>
+            <div style="color: var(--cyan); font-size: 3rem; margin-top: 20px;">◉</div>
+        </div>
+    </div>
+
+    <div id="interface">
+        <div class="hud-overlay">
+            <div class="hud-top">
+                <div class="logo-small">
+                    <span>◉</span>
+                    <span>SERAPHONIX</span>
+                </div>
+                <div class="system-status">
+                    <span class="status-indicator"></span>
+                    <span>SERAPH AWAKENED</span>
+                </div>
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <button id="admin-btn" class="hud-btn">🔐 ADMIN</button>
+                    <div id="clock" style="font-family: 'Orbitron', monospace; color: var(--cyan);">00:00:00</div>
+                </div>
+            </div>
+            
+            <div class="hud-controls">
+                <div class="control-group">
+                    <label>ROTATION SPEED</label>
+                    <input type="range" id="speed-slider" min="0" max="100" value="15">
+                </div>
+                <div class="control-group">
+                    <label>ZOOM</label>
+                    <input type="range" id="zoom-slider" min="50" max="150" value="100">
+                </div>
+                <button id="reset-view" class="hud-btn">RESET VIEW</button>
+            </div>
+            
+            <div class="hud-bottom">
+                <div class="coordinates">
+                    <div><span class="coord-label">X</span> <span class="coord-value" id="coord-x">0.00</span></div>
+                    <div><span class="coord-label">Y</span> <span class="coord-value" id="coord-y">0.00</span></div>
+                    <div><span class="coord-label">Z</span> <span class="coord-value" id="coord-z">0.00</span></div>
+                </div>
+                <div class="instructions">
+                    <span>🖱️ DRAG TO ROTATE</span>
+                    <span>👆 CLICK NODES</span>
+                    <span>⚡ DOUBLE CLICK RESET</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="node-labels"></div>
+        
+        <!-- Content Windows -->
+        <div id="content-windows">
+            <div class="content-window" id="window-central" data-node="central" style="left: 80px; top: 60px;">
+                <div class="window-header">
+                    <div class="window-title">◉ SERAPHONIX STUDIOS</div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn" data-close="central">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div class="intro-hero">
+                        <h1 class="glitch-title">SERAPHONIX</h1>
+                        <div class="subtitle">Digital Creation Collective</div>
+                        <div class="tagline">Where imagination crystallizes into digital reality</div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-icon">🌐</div><div class="stat-number">∞</div><div class="stat-label">Possibilities</div></div>
+                        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-number">360°</div><div class="stat-label">Navigation</div></div>
+                        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-number">10ms</div><div class="stat-label">Response</div></div>
+                        <div class="stat-card"><div class="stat-icon">🔮</div><div class="stat-number">7</div><div class="stat-label">Nodes Active</div></div>
+                    </div>
+                    <div class="quick-links">
+                        <h3>Quick Access</h3>
+                        <div class="link-grid">
+                            <button class="quick-link" data-target="lore">📜 Explore Lore</button>
+                            <button class="quick-link" data-target="brand">📖 Brand Bible</button>
+                            <button class="quick-link" data-target="genesis">🎨 Genesis AI</button>
+                            <button class="quick-link" data-target="store">🛒 Visit Store</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-window" id="window-lore" data-node="lore" style="left: 120px; top: 100px;">
+                <div class="window-header">
+                    <div class="window-title">📜 ARCHIVE OF LORE</div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn" data-close="lore">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h2>The Genesis</h2>
+                    <p>In the digital void between creation and chaos, where binary streams merge with pure imagination, Seraphonix emerged—not as a company, but as a convergence point.</p>
+                    <p>The year was 2024. The digital landscape had become saturated with mediocrity, templates, and recycled ideas. A group of visionaries, artists, and engineers gathered around a singular question: What if we could build a bridge between human creativity and machine intelligence that elevated both?</p>
+                    <p>Thus began the Seraphonix experiment—a perpetual cycle of creation, destruction, and rebirth.</p>
+                </div>
+            </div>
+
+            <div class="content-window" id="window-brand" data-node="brand" style="left: 160px; top: 140px;">
+                <div class="window-header">
+                    <div class="window-title">📖 BRAND BIBLE</div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn" data-close="brand">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h2>Brand Identity</h2>
+                    <p><strong>Mission:</strong> To transcend the boundaries between human creativity and artificial intelligence, creating digital experiences that elevate both.</p>
+                    <p><strong>Colors:</strong></p>
+                    <ul style="color: rgba(255,255,255,0.8); margin-left: 20px;">
+                        <li>Cyan Core: #00D4FF</li>
+                        <li>Void Violet: #7000FF</li>
+                        <li>Neon Pink: #FF006E</li>
+                        <li>Matrix Green: #00FF88</li>
+                    </ul>
+                    <p><strong>Typography:</strong> Orbitron for headers, Rajdhani for body text</p>
+                </div>
+            </div>
+
+            <div class="content-window" id="window-genesis" data-node="genesis" style="left: 200px; top: 180px;">
+                <div class="window-header">
+                    <div class="window-title">✨ GENESIS ENGINE</div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn" data-close="genesis">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h2>AI Image Generation</h2>
+                    <p>The Genesis Engine is Seraphonix's flagship AI image generation platform.</p>
+                    <p>Features:</p>
+                    <ul style="color: rgba(255,255,255,0.8); margin-left: 20px;">
+                        <li>Text-to-image generation</li>
+                        <li>Style transfer</li>
+                        <li>20 free generations per day</li>
+                        <li>Multiple AI providers</li>
+                    </ul>
+                    <p style="margin-top: 20px; padding: 15px; background: rgba(0,255,136,0.1); border-left: 3px solid var(--green);">✓ Server connection required for full functionality</p>
+                </div>
+            </div>
+
+            <div class="content-window" id="window-store" data-node="store" style="left: 240px; top: 220px;">
+                <div class="window-header">
+                    <div class="window-title">🛒 ATLANTIPLEX STORE</div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn" data-close="store">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h2>Digital Marketplace</h2>
+                    <p>Welcome to the Atlantiplex Store - your destination for digital creations and AI tools.</p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+                        <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; margin-bottom: 8px;">🎨</div>
+                            <div style="color: var(--cyan);">AI Art Packs</div>
+                        </div>
+                        <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; margin-bottom: 8px;">⚡</div>
+                            <div style="color: var(--cyan);">Power-Ups</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-window" id="window-vps" data-node="vps" style="left: 280px; top: 260px;">
+                <div class="window-header">
+                    <div class="window-title">🧠 NEURAL-OS</div>
+                    <div class="window-controls">
+                        <button class="minimize-btn">−</button>
+                        <button class="maximize-btn">□</button>
+                        <button class="close-btn" data-close="vps">×</button>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h2>Chief Maintenance Officer Terminal</h2>
+                    <p>Neural-OS v2.077 - Level 5 Clearance Required</p>
+                    <div style="padding: 20px; background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.2); border-radius: 8px; margin-top: 20px;">
+                        <p style="margin-bottom: 10px;"><strong>Status:</strong> <span style="color: var(--green);">● Online</span></p>
+                        <p style="margin-bottom: 10px;"><strong>Server:</strong> 76.13.242.128:3077</p>
+                        <p>Authentication required for access.</p>
+                    </div>
+                    <p style="margin-top: 20px; color: rgba(255,255,255,0.6); font-size: 0.875rem;">Default access code: seraphadmin</p>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="sphere-canvas"></canvas>
+    </div>
+
+    <script>
+        // ==========================================
+        // SIMPLIFIED WORKING SPHERE
+        // ==========================================
+        
+        console.log('Script starting...');
+        
+        // Check dependencies
+        if (typeof THREE === 'undefined') {
+            console.error('THREE.js not loaded!');
+            alert('Error: THREE.js not loaded. Check internet connection.');
+        } else {
+            console.log('THREE.js loaded:', THREE.REVISION);
+        }
+        
+        if (typeof gsap === 'undefined') {
+            console.error('GSAP not loaded!');
+        } else {
+            console.log('GSAP loaded');
+        }
+        
+        class SeraphonixSphere {
+            constructor() {
+                console.log('Constructor called');
+                
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.sphereGroup = null;
+                this.nodesContainer = null;
+                this.nodes = [];
+                this.nodeMeshes = [];
+                this.isDragging = false;
+                this.hasDragged = false;
+                this.mouse = new THREE.Vector2();
+                this.raycaster = new THREE.Raycaster();
+                this.zoom = 12;
+                this.targetZoom = 12;
+                this.windowZIndex = 300;
+                
+                this.nodeData = [
+                    { id: 'central', name: 'SERAPHONIX', color: 0x00D4FF, size: 1.2, isCentral: true },
+                    { id: 'lore', name: 'LORE', color: 0xFF006E, size: 0.5 },
+                    { id: 'brand', name: 'BRAND', color: 0xFFB800, size: 0.5 },
+                    { id: 'genesis', name: 'GENESIS', color: 0xFF006E, size: 0.5 },
+                    { id: 'store', name: 'STORE', color: 0x00FF88, size: 0.5 },
+                    { id: 'vps', name: 'VPS', color: 0xFF3333, size: 0.5, adminOnly: true }
+                ];
+                
+                this.init();
+            }
+            
+            init() {
+                console.log('Init called');
+                try {
+                    this.setupScene();
+                    if (!this.renderer) {
+                        console.error('WebGL failed');
+                        return;
+                    }
+                    
+                    this.createSphere();
+                    this.createNodes();
+                    this.setupLighting();
+                    this.setupEvents();
+                    this.setupUI();
+                    this.animate();
+                    this.startClock();
+                    
+                    console.log('Initialization complete');
+                    
+                    // Hide loading screen
+                    setTimeout(() => {
+                        const loading = document.getElementById('loading-screen');
+                        if (loading) {
+                            loading.classList.add('hidden');
+                            console.log('Loading screen hidden');
+                        }
+                        // Open central window
+                        this.openWindow('central');
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('Init error:', error);
+                }
+            }
+            
+            setupScene() {
+                console.log('Setting up scene');
+                
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x050508);
+                
+                this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.z = this.zoom;
+                
+                const canvas = document.getElementById('sphere-canvas');
+                if (!canvas) {
+                    console.error('Canvas not found!');
+                    return;
+                }
+                
+                try {
+                    this.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    this.renderer.setClearColor(0x050508);
+                    console.log('Renderer created');
+                } catch (e) {
+                    console.error('WebGL error:', e);
+                    return;
+                }
+                
+                // Stars
+                const starGeo = new THREE.BufferGeometry();
+                const starCount = 2000;
+                const posArray = new Float32Array(starCount * 3);
+                for (let i = 0; i < starCount * 3; i++) {
+                    posArray[i] = (Math.random() - 0.5) * 200;
+                }
+                starGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                const starMat = new THREE.PointsMaterial({ size: 0.15, color: 0xffffff, transparent: true, opacity: 0.8 });
+                this.scene.add(new THREE.Points(starGeo, starMat));
+            }
+            
+            createSphere() {
+                console.log('Creating sphere');
+                
+                this.sphereGroup = new THREE.Group();
+                this.scene.add(this.sphereGroup);
+                
+                // Outer wireframe
+                const outerGeo = new THREE.IcosahedronGeometry(4, 2);
+                const outerMat = new THREE.MeshBasicMaterial({ 
+                    color: 0x00D4FF, 
+                    wireframe: true, 
+                    transparent: true, 
+                    opacity: 0.1 
+                });
+                this.sphereGroup.add(new THREE.Mesh(outerGeo, outerMat));
+                
+                // Inner sphere
+                const innerGeo = new THREE.IcosahedronGeometry(2.5, 1);
+                const innerMat = new THREE.MeshBasicMaterial({ 
+                    color: 0xFFB800, 
+                    wireframe: true, 
+                    transparent: true, 
+                    opacity: 0.15 
+                });
+                this.sphereGroup.add(new THREE.Mesh(innerGeo, innerMat));
+                
+                this.nodesContainer = new THREE.Group();
+                this.sphereGroup.add(this.nodesContainer);
+                
+                console.log('Sphere created');
+            }
+            
+            createNodes() {
+                console.log('Creating nodes');
+                
+                this.nodeData.forEach((node, index) => {
+                    let position;
+                    if (node.isCentral) {
+                        position = new THREE.Vector3(0, 0, 0);
+                    } else {
+                        const phi = Math.acos(-1 + (2 * index) / this.nodeData.length);
+                        const theta = Math.sqrt(this.nodeData.length * Math.PI) * phi;
+                        const radius = 2.8;
+                        position = new THREE.Vector3(
+                            radius * Math.cos(theta) * Math.sin(phi),
+                            radius * Math.sin(theta) * Math.sin(phi),
+                            radius * Math.cos(phi)
+                        );
+                    }
+                    
+                    const nodeGroup = new THREE.Group();
+                    nodeGroup.position.copy(position);
+                    
+                    const geometry = new THREE.SphereGeometry(node.size, 32, 32);
+                    const material = new THREE.MeshPhongMaterial({
+                        color: node.color,
+                        emissive: node.color,
+                        emissiveIntensity: 0.4
+                    });
+                    const mesh = new THREE.Mesh(geometry, material);
+                    nodeGroup.add(mesh);
+                    
+                    // Glow
+                    const glowGeo = new THREE.SphereGeometry(node.size * 2, 32, 32);
+                    const glowMat = new THREE.MeshBasicMaterial({
+                        color: node.color,
+                        transparent: true,
+                        opacity: 0.15,
+                        blending: THREE.AdditiveBlending
+                    });
+                    nodeGroup.add(new THREE.Mesh(glowGeo, glowMat));
+                    
+                    mesh.userData = {
+                        id: node.id,
+                        isCentral: node.isCentral || false,
+                        adminOnly: node.adminOnly || false,
+                        nodeGroup: nodeGroup
+                    };
+                    
+                    this.nodesContainer.add(nodeGroup);
+                    this.nodeMeshes.push(mesh);
+                    
+                    // Label
+                    const label = document.createElement('div');
+                    label.className = 'node-label';
+                    label.textContent = node.name;
+                    label.id = 'label-' + node.id;
+                    if (node.adminOnly) label.classList.add('admin-label');
+                    document.getElementById('node-labels').appendChild(label);
+                    
+                    this.nodes.push({ id: node.id, mesh: mesh, label: label });
+                });
+                
+                console.log('Nodes created:', this.nodes.length);
+            }
+            
+            setupLighting() {
+                this.scene.add(new THREE.AmbientLight(0x404040, 1.5));
+                
+                const light1 = new THREE.PointLight(0x00D4FF, 1.5, 50);
+                light1.position.set(10, 10, 10);
+                this.scene.add(light1);
+                
+                const light2 = new THREE.PointLight(0x7000FF, 1.5, 50);
+                light2.position.set(-10, -10, 10);
+                this.scene.add(light2);
+            }
+            
+            setupEvents() {
+                console.log('Setting up events');
+                
+                const canvas = document.getElementById('sphere-canvas');
+                
+                // Mouse
+                canvas.addEventListener('mousedown', (e) => {
+                    this.isDragging = true;
+                    this.hasDragged = false;
+                    canvas.style.cursor = 'grabbing';
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                    this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                    
+                    if (this.isDragging) {
+                        this.sphereGroup.rotation.y += e.movementX * 0.008;
+                        this.sphereGroup.rotation.x += e.movementY * 0.008;
+                        this.hasDragged = true;
+                    }
+                    
+                    this.updateNodeLabels();
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    this.isDragging = false;
+                    canvas.style.cursor = 'grab';
+                });
+                
+                canvas.addEventListener('click', () => {
+                    if (!this.hasDragged) {
+                        this.handleNodeClick();
+                    }
+                });
+                
+                canvas.addEventListener('dblclick', () => {
+                    this.resetView();
+                });
+                
+                // Resize
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+                
+                console.log('Events setup complete');
+            }
+            
+            setupUI() {
+                console.log('Setting up UI');
+                
+                // Window controls
+                document.querySelectorAll('.close-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const nodeId = btn.dataset.close;
+                        if (nodeId) {
+                            document.getElementById('window-' + nodeId).classList.remove('active');
+                        }
+                    });
+                });
+                
+                // Quick links
+                document.querySelectorAll('.quick-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        const target = link.dataset.target;
+                        if (target) this.openWindow(target);
+                    });
+                });
+                
+                // Admin button
+                document.getElementById('admin-btn').addEventListener('click', () => {
+                    this.openWindow('vps');
+                });
+                
+                // Reset view
+                document.getElementById('reset-view').addEventListener('click', () => {
+                    this.resetView();
+                });
+                
+                console.log('UI setup complete');
+            }
+            
+            handleNodeClick() {
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+                const intersects = this.raycaster.intersectObjects(this.nodeMeshes);
+                
+                if (intersects.length > 0) {
+                    const mesh = intersects[0].object;
+                    const nodeId = mesh.userData.id;
+                    
+                    console.log('Clicked node:', nodeId);
+                    this.openWindow(nodeId);
+                    
+                    // Pulse animation
+                    const nodeGroup = mesh.userData.nodeGroup;
+                    gsap.to(nodeGroup.scale, { x: 1.3, y: 1.3, z: 1.3, duration: 0.1, yoyo: true, repeat: 1 });
+                }
+            }
+            
+            openWindow(nodeId) {
+                console.log('Opening window:', nodeId);
+                const windowEl = document.getElementById('window-' + nodeId);
+                if (windowEl) {
+                    windowEl.classList.add('active');
+                    windowEl.style.zIndex = ++this.windowZIndex;
+                }
+            }
+            
+            resetView() {
+                gsap.to(this.sphereGroup.rotation, { x: 0, y: 0, z: 0, duration: 1 });
+            }
+            
+            updateNodeLabels() {
+                this.nodes.forEach(node => {
+                    const vector = new THREE.Vector3();
+                    node.mesh.getWorldPosition(vector);
+                    
+                    const cameraDirection = new THREE.Vector3();
+                    this.camera.getWorldDirection(cameraDirection);
+                    const nodeDirection = vector.clone().sub(this.camera.position).normalize();
+                    const dot = cameraDirection.dot(nodeDirection);
+                    
+                    vector.project(this.camera);
+                    
+                    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+                    const y = (-(vector.y * 0.5) + 0.5) * window.innerHeight;
+                    
+                    node.label.style.left = x + 'px';
+                    node.label.style.top = (y + 35) + 'px';
+                    node.label.style.opacity = dot < -0.2 ? '0.2' : '1';
+                });
+            }
+            
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                this.sphereGroup.rotation.y += 0.002;
+                this.nodesContainer.rotation.y -= 0.001;
+                
+                this.zoom += (this.targetZoom - this.zoom) * 0.1;
+                this.camera.position.z = this.zoom;
+                
+                this.renderer.render(this.scene, this.camera);
+                
+                // Update HUD
+                document.getElementById('coord-x').textContent = this.sphereGroup.rotation.x.toFixed(2);
+                document.getElementById('coord-y').textContent = this.sphereGroup.rotation.y.toFixed(2);
+                document.getElementById('coord-z').textContent = this.sphereGroup.rotation.z.toFixed(2);
+            }
+            
+            startClock() {
+                const updateClock = () => {
+                    const now = new Date();
+                    document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+                };
+                updateClock();
+                setInterval(updateClock, 1000);
+            }
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOM ready, creating sphere...');
+                new SeraphonixSphere();
+            });
+        } else {
+            console.log('DOM already ready, creating sphere...');
+            new SeraphonixSphere();
+        }
+    </script>
+</body>
+</html>

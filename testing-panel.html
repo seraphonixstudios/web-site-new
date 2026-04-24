@@ -1,0 +1,63 @@
+<div class="tab-content" id="testingTab">
+        <div class="dashboard-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">GENESIS // API_TESTING</div>
+                    <div class="panel-status" id="genesisStatus">OFFLINE</div>
+                </div>
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label>Prompt</label>
+                        <input type="text" id="testPrompt" class="input-field" value="a beautiful sunset">
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="testGenesisGenerate()">GENERATE</button>
+                        <button class="btn" onclick="testGenesisHealth()">HEALTH</button>
+                    </div>
+                    <div class="test-result" id="genesisResult"></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">WEBSITE // STATUS</div>
+                    <div class="panel-status" id="websiteStatus">CHECKING</div>
+                </div>
+                <div class="panel-content">
+                    <div class="quick-actions">
+                        <button class="btn" onclick="testWebsite()">MAIN SITE</button>
+                        <button class="btn" onclick="testGenesisProxy()">/GENESIS</button>
+                        <button class="btn" onclick="testStore()">STORE</button>
+                    </div>
+                    <div class="test-result" id="websiteResult"></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">NEURAL-OS // TESTING</div>
+                    <div class="panel-status" id="neuralTestStatus">READY</div>
+                </div>
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label>Endpoint</label>
+                        <select id="neuralEndpoint" class="input-field">
+                            <option value="/api/system">/api/system</option>
+                            <option value="/api/processes">/api/processes</option>
+                            <option value="/api/network">/api/network</option>
+                        </select>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="btn" onclick="testNeuralEndpoint()">TEST</button>
+                        <button class="btn" onclick="testNeuralFull()">FULL DIAGNOSTIC</button>
+                    </div>
+                    <div class="test-result" id="neuralResult"></div>
+                </div>
+            </div>
+            <div class="panel full-width">
+                <div class="panel-header">
+                    <div class="panel-title">TEST LOG</div>
+                    <button class="btn-small" onclick="clearTestLog()">CLEAR</button>
+                </div>
+                <div class="log-output" id="testLog"></div>
+            </div>
+        </div>
+    </div>

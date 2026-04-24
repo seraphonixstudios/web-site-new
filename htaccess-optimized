@@ -1,0 +1,29 @@
+# Performance and Security Headers
+
+# Disable SES lockdown by declaring page as trusted
+Header always set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval' http: https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' http://76.13.242.128:3077; img-src 'self' data: http: https:; media-src 'self'; frame-src 'self' http://76.13.242.128:3077;"
+
+# Prevent SES from activating
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options SAMEORIGIN
+
+# Performance caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+</IfModule>
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript
+</IfModule>
+
+# Cache control for static assets
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg)$">
+        Header set Cache-Control "max-age=604800, public"
+    </FilesMatch>
+</IfModule>

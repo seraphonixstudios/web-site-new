@@ -1,0 +1,92 @@
+/* Mobile Responsive Enhancements for Touch Navigation */
+* {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+    #sphere-canvas {
+        touch-action: none !important;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    
+    body {
+        overflow: hidden;
+        overscroll-behavior: none;
+    }
+    
+    .content-window {
+        width: 95vw !important;
+        max-height: 80vh;
+        max-width: 95vw;
+        left: 2.5vw !important;
+        top: 10vh !important;
+    }
+    
+    .content-window.mobile-view {
+        left: 2.5vw !important;
+        top: 10vh !important;
+        width: 95vw !important;
+        height: 80vh !important;
+        max-width: 95vw !important;
+        max-height: 80vh !important;
+    }
+    
+    .node-label {
+        font-size: 0.65rem;
+        padding: 6px 10px;
+        pointer-events: auto;
+    }
+    
+    #gesture-hints {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        max-width: calc(100vw - 20px);
+        font-size: 0.7rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .quick-link {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+    
+    .link-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .metric-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-window {
+        width: 98vw !important;
+        left: 1vw !important;
+        max-height: 85vh;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .glitch-title {
+        font-size: 1.25rem;
+    }
+    
+    .window-content {
+        padding: 16px;
+    }
+}

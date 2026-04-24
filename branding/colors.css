@@ -1,0 +1,53 @@
+/* Seraphonix Studios - CSS Variables
+ * Copy these variables into your project's CSS
+ */
+
+:root {
+  /* Primary Colors */
+  --seraph-cyan: #00D4FF;
+  --seraph-cyan-glow: rgba(0, 212, 255, 0.5);
+  --seraph-violet: #7000FF;
+  --seraph-violet-glow: rgba(112, 0, 255, 0.5);
+  
+  /* Secondary Colors */
+  --seraph-pink: #FF006E;
+  --seraph-pink-glow: rgba(255, 0, 110, 0.5);
+  --seraph-green: #00FF88;
+  --seraph-green-glow: rgba(0, 255, 136, 0.5);
+  --seraph-gold: #FFB800;
+  --seraph-gold-glow: rgba(255, 184, 0, 0.5);
+  
+  /* Semantic Colors */
+  --seraph-red: #FF3333;
+  --seraph-red-glow: rgba(255, 51, 51, 0.5);
+  
+  /* Background Colors */
+  --seraph-bg-dark: #050508;
+  --seraph-bg-panel: rgba(10, 10, 15, 0.98);
+  --seraph-bg-glass: rgba(255, 255, 255, 0.05);
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* Shadows */
+  --glow-cyan: 0 0 20px var(--seraph-cyan-glow), 0 0 40px var(--seraph-cyan-glow);
+  --glow-violet: 0 0 20px var(--seraph-violet-glow), 0 0 40px var(--seraph-violet-glow);
+  --glow-pink: 0 0 20px var(--seraph-pink-glow), 0 0 40px var(--seraph-pink-glow);
+  --glow-green: 0 0 20px var(--seraph-green-glow), 0 0 40px var(--seraph-green-glow);
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 100px;
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
