@@ -28,6 +28,7 @@ server {
     }
 
     location /genesis-page {
+        default_type text/html;
         alias /var/www/html/genesis.html;
     }
 
